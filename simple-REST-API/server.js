@@ -9,6 +9,7 @@ let movies = [
   { id: 2, title: "Avatar", year: 2009 },
 ];
 
+// middleware
 function authenticate(req, res, next) {
   const key = req.headers["x-api-key"];
   if (key === API_KEY) {
@@ -21,9 +22,17 @@ function authenticate(req, res, next) {
 app.get("/movies", authenticate, (req, res) => res.json(movies));
 
 app.post("/movies", authenticate, (req, res) => {
-  const movie = { id: movies.length + 1, ...req.body };
-  movies.push(movie);
-  res.status(201).json(movie);
+  try {
+    const movie = { id: movies.length + 1, ...req.body };
+
+    if (!req.body.title) {
+      return res.status(400).json({ error: "Title is required" });
+    }
+    movies.push(movie);
+    res.status(201).json(movie);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 app.delete("/movies/:id", authenticate, (req, res) => {
