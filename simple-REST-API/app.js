@@ -31,4 +31,18 @@ app.get("/books", authenticate, (req, res) => {
   res.json(books);
 });
 
+app.get("/books/:id", (req, res, next) => {
+  try {
+    const bookId = parseInt(req.params.id);
+    const book = books.find((b) => b.id === bookId);
+
+    if (!book) {
+      throw new AppError("Book not found", 404);
+    }
+    res.json(book);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.listen(3000, () => console.log("Book library API running on port 3000"));
