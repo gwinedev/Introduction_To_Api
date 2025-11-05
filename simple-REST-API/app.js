@@ -45,4 +45,16 @@ app.get("/books/:id", (req, res, next) => {
   }
 });
 
+// Error handlers
+app.use((err, req, res, next) => {
+  console.error("Error handler triggered: ", err.message);
+
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    status: "error",
+    message: err.message || "Something went wrong",
+  });
+});
+
 app.listen(3000, () => console.log("Book library API running on port 3000"));
