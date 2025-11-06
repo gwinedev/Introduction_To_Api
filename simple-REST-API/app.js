@@ -45,6 +45,25 @@ app.get("/books/:id", (req, res, next) => {
   }
 });
 
+app.post("/books", (req, res, next) => {
+  try {
+    const { title, author } = req.body;
+    if (!title || !author) {
+      throw new AppError("Title and Author are required", 400);
+    }
+    const newBook = {
+      id: books.length + 1,
+      title,
+      author,
+    };
+
+    books.push(newBook);
+    res.status(201).json(newBook);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Error handlers
 app.use((err, req, res, next) => {
   console.error("Error handler triggered: ", err.message);
