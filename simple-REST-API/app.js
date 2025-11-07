@@ -64,6 +64,22 @@ app.post("/books", (req, res, next) => {
   }
 });
 
+// Delete a book
+app.delete("/books/:id", (req, res, next) => {
+  try {
+    const bookId = parseInt(req.params.id);
+    const index = books.findIndex((b) => b.id === bookId);
+
+    if (index < 0) {
+      throw new AppError("Book not found", 404);
+    }
+    books.splice(index, 1);
+    res.json({ message: "Book deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Error handlers
 app.use((err, req, res, next) => {
   console.error("Error handler triggered: ", err.message);
